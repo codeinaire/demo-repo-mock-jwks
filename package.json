@@ -1,0 +1,37 @@
+{
+  "name": "demo-repo-mock-jwks",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codeinaire/demo-repo-mock-jwks.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/codeinaire/demo-repo-mock-jwks/issues"
+  },
+  "homepage": "https://github.com/codeinaire/demo-repo-mock-jwks#readme",
+  "devDependencies": {
+    "@types/jest": "^24.0.22",
+    "@types/node": "^12.12.6",
+    "jest": "^24.9.0",
+    "mock-jwks": "^0.2.0",
+    "nock": "^11.7.0",
+    "ts-jest": "^24.1.0",
+    "ts-node": "^8.4.1",
+    "typescript": "^3.7.2"
+  },
+  "dependencies": {
+    "@types/aws-lambda": "^8.10.34",
+    "@types/jsonwebtoken": "^8.3.5",
+    "dotenv": "^8.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "jwks-rsa": "^1.6.0"
+  }
+}
