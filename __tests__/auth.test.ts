@@ -1,40 +1,42 @@
-import createJWKSMock from 'mock-jwks';
-import Auth from '../auth';
+import createJWKSMock from 'mock-jwks'
+import { createCheckScopesAndResolve } from '../auth'
 
-import { APIGatewayProxyEvent } from 'aws-lambda';
+import { APIGatewayProxyEvent } from 'aws-lambda'
+
+const TOKEN_ISSUER = 'https://test-app.com/'
 
 describe('Given an event with an [INCORRECT] scope', () => {
   it('Returned - You are not authorized!', async () => {
-    // const jwksMock = await createJwksContext();
-    process.env.JWKS_URI = 'https://test-app.com/.well-known/jwks.json';
-    process.env.TOKEN_ISSUER = 'https://test-app.com/';
-    process.env.AUDIENCE = 'https://test-app.com/test/';
-    const jwksMock = createJWKSMock('https://test-app.com/');
-    await jwksMock.start();
-    const accessToken = jwksMock.token({
-      aud: [
-        'https://test-app.com/test/'
-      ],
-      iss: 'https://test-app.com/',
-      sub: 'test-user',
-      scope: 'incorrect scope'
-    })
-    console.log('accessToken', accessToken);
+    const jwksMock = createJWKSMock(TOKEN_ISSUER)
+    await jwksMock.start()
 
+    const checkScopesAndResolve = createCheckScopesAndResolve({
+      jwksUri: 'https://test-app.com/.well-known/jwks.json',
+      issuer: TOKEN_ISSUER,
+      audience: 'https://test-app.com/test/',
+    })
+
+    const accessToken = jwksMock.token({
+      aud: ['https://test-app.com/test/'],
+      iss: TOKEN_ISSUER,
+      sub: 'test-user',
+      scope: 'incorrect scope',
+    })
 
     const mockedEvent = customMockedEvent({
-      authorization: `Bearer ${accessToken}`
-    });
+      authorization: `Bearer ${accessToken}`,
+    })
 
-    const authInstance = new Auth();
-
-    expect(authInstance.checkScopesAndResolve(mockedEvent, ['incorrect scope'])).resolves.toThrow('Error: You are not authorized!');
-    await jwksMock.stop();
+    await expect(
+      checkScopesAndResolve(mockedEvent, ['incorrect scope']),
+    ).rejects.toEqual(new Error('You are not authorized!'))
+    await jwksMock.stop()
   })
 })
 
-
-function customMockedEvent(modificationObject: IModifiedObject): APIGatewayProxyEvent {
+function customMockedEvent(
+  modificationObject: IModifiedObject,
+): APIGatewayProxyEvent {
   return {
     body: '{"body": "mock body"}',
     headers: {
@@ -43,9 +45,7 @@ function customMockedEvent(modificationObject: IModifiedObject): APIGatewayProxy
     },
     httpMethod: 'POST',
     multiValueHeaders: {
-      authorization: [
-        'invalid token'
-      ]
+      authorization: ['invalid token'],
     },
     isBase64Encoded: false,
     multiValueQueryStringParameters: null,
@@ -57,7 +57,7 @@ function customMockedEvent(modificationObject: IModifiedObject): APIGatewayProxy
       apiId: 'offlineContext_apiId',
       authorizer: {
         principalId: 'offlineContext_authorizer_principalId',
-        claims: [Object]
+        claims: [Object],
       },
       httpMethod: 'POST',
       identity: {
@@ -80,10 +80,10 @@ function customMockedEvent(modificationObject: IModifiedObject): APIGatewayProxy
       requestTimeEpoch: 1570756990015,
       resourceId: 'offlineContext_resourceId',
       resourcePath: '/nmm-app',
-      stage: 'dev'
+      stage: 'dev',
     },
     resource: '/nmm-app',
-    stageVariables: null
+    stageVariables: null,
   }
 }
 
