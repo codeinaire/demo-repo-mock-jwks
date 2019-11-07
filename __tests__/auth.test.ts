@@ -28,7 +28,7 @@ describe('Given an event with an [INCORRECT] scope', () => {
 
     const authInstance = new Auth();
 
-    expect(authInstance.checkScopesAndResolve(mockedEvent, ['incorrect scope'])).resolves.toThrow('Error: You are not authorized!');
+    await expect(authInstance.checkScopesAndResolve(mockedEvent, ['incorrect scope'])).resolves.toThrow('Error: You are not authorized!');
     await jwksMock.stop();
   })
 })
