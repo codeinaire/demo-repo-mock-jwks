@@ -38,7 +38,7 @@
   "dependencies": {
     "@types/aws-lambda": "^8.10.34",
     "@types/jsonwebtoken": "^8.3.5",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "jwks-rsa": "^1.6.0"
   }
 }
